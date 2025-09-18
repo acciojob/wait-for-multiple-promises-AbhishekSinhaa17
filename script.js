@@ -13,7 +13,7 @@ function showLoading() {
   outputBody.innerHTML = "";
 
   const row = outputBody.insertRow();
-  row.id = "loading"; // 👈 Cypress expects this ID
+  row.id = "loading"; 
   const cell = row.insertCell();
   cell.colSpan = 2;
   cell.textContent = "Loading...";
@@ -41,7 +41,7 @@ function populateTable(results, totalTime) {
 }
 
 async function runPromises() {
-  showLoading(); // 👈 add loading row before running promises
+  showLoading();
 
   const promises = [createPromise(1), createPromise(2), createPromise(3)];
   const results = await Promise.all(promises);

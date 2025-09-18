@@ -1,45 +1,52 @@
-//your JS code here. If required.
 function createPromise(id) {
-      const delay = Math.random() * 2000 + 1000;
-      return new Promise(resolve => {
-        setTimeout(() => {
-          const timeTaken = delay / 1000;
-          resolve({ id, timeTaken });
-        }, delay);
-      });
-    }
+  const delay = Math.random() * 2000 + 1000;
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const timeTaken = delay / 1000;
+      resolve({ id, timeTaken });
+    }, delay);
+  });
+}
 
-    function populateTable(results, totalTime) {
-      const outputBody = document.getElementById('output');
-      outputBody.innerHTML = ''; 
+function showLoading() {
+  const outputBody = document.getElementById("output");
+  outputBody.innerHTML = "";
 
-      results.forEach(result => {
-        const row = outputBody.insertRow();
-        const promiseCell = row.insertCell();
-        const timeCell = row.insertCell();
+  const row = outputBody.insertRow();
+  row.id = "loading"; // 👈 Cypress expects this ID
+  const cell = row.insertCell();
+  cell.colSpan = 2;
+  cell.textContent = "Loading...";
+}
 
-        promiseCell.textContent = `Promise ${result.id}`;
-        timeCell.textContent = result.timeTaken.toFixed(3);
-      });
+function populateTable(results, totalTime) {
+  const outputBody = document.getElementById("output");
+  outputBody.innerHTML = ""; // clear the loading row
 
-      const totalRow = outputBody.insertRow();
-      const totalLabelCell = totalRow.insertCell();
-      const totalTimeCell = totalRow.insertCell();
+  results.forEach(result => {
+    const row = outputBody.insertRow();
+    const promiseCell = row.insertCell();
+    const timeCell = row.insertCell();
 
-      totalLabelCell.textContent = 'Total';
-      totalTimeCell.textContent = totalTime.toFixed(3);
-    }
+    promiseCell.textContent = `Promise ${result.id}`;
+    timeCell.textContent = result.timeTaken.toFixed(3);
+  });
 
-    async function runPromises() {
-      const promises = [
-        createPromise(1),
-        createPromise(2),
-        createPromise(3)
-      ];
+  const totalRow = outputBody.insertRow();
+  const totalLabelCell = totalRow.insertCell();
+  const totalTimeCell = totalRow.insertCell();
 
-      const results = await Promise.all(promises);
-      const totalTime = Math.max(...results.map(r => r.timeTaken));
-      populateTable(results, totalTime);
-    }
+  totalLabelCell.textContent = "Total";
+  totalTimeCell.textContent = totalTime.toFixed(3);
+}
 
-    runPromises();
+async function runPromises() {
+  showLoading(); // 👈 add loading row before running promises
+
+  const promises = [createPromise(1), createPromise(2), createPromise(3)];
+  const results = await Promise.all(promises);
+  const totalTime = Math.max(...results.map(r => r.timeTaken));
+  populateTable(results, totalTime);
+}
+
+runPromises();
